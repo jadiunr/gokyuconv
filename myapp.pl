@@ -1,19 +1,17 @@
 #!/usr/bin/env perl
 use Mojolicious::Lite;
 use URI::Escape::XS;
+use lib '.';
 use Gokyu;
 
-# Documentation browser under "/perldoc"
-plugin 'PODRenderer';
+app->config(hypnotoad => {listen => ['http://*:80'], workers => 20});
 
-app->config(hypnotoad => {listen => ['http://*:3000'], workers => 20});
-
-get '/kengi' => sub {
+get '/' => sub {
   my $c = shift;
   $c->render('index', result => '', enc => '');
 };
 
-post '/kengi' => sub {
+post '/' => sub {
   my $c = shift;
   $c->app->log->info($c->param('message'));
   my $text = conv($c->param('message'));
@@ -40,7 +38,7 @@ __DATA__
         <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
 
         <p class="lead"><%= $result %></p>
-        <%= form_for '/kengi' => (method => 'post') => begin %>
+        <%= form_for '/' => (method => 'post') => begin %>
           <%= text_area 'message', class => 'form-control input-lg', rows => "3", placeholder => "文章を入力してください(2000文字まで)", maxlength => "2000" %><br>
           <%= submit_button 'あ゛ぁぁー', class => "btn btn-primary btn-lg" %>
         <% end %>
